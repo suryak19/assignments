@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hover Segmented Video Player</title>
+    <style>
+        #segmentedVideo {
+            width: 640px;
+            height: 360px;
+        }
+
+        #progressContainer {
+            position: relative;
+            width: 100%;
+            background-color: #eee;
+            cursor: pointer;
+        }
+
+        #progressBar {
+            height: 10px;
+            background-color: #4CAF50;
+            width: 0;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #progressContainer:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <h2>Hover Segmented Video Player</h2>
+    <video id="segmentedVideo" controls>
+        <!-- Add your video source here -->
+        <source src="/Users/suryakonduru/Downloads/sea_video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div id="progressContainer" onmousemove="updateHover(event)" onclick="seekToHover(event)">
+        <div id="progressBar"></div>
+        <div class="tooltip" id="tooltip">Segment Info</div>
+    </div>
+</div>
+
+<script>
+    var video = document.getElementById('segmentedVideo');
+    var progressContainer = document.getElementById('progressContainer');
+    var progressBar = document.getElementById('progressBar');
+    var tooltip = document.getElementById('tooltip');
+
+    function updateHover(event) {
+        var isOverProgressBar = event.target === progressContainer || progressContainer.contains(event.target);
+
+        if (isOverProgressBar) {
+            var totalWidth = progressContainer.offsetWidth;
+            var mouseX = event.clientX - progressContainer.getBoundingClientRect().left;
+            var hoverPercentage = (mouseX / totalWidth) * 100;
+
+            progressBar.style.width = hoverPercentage + '%';
+
+            // Update tooltip text
+            var hoverTime = (hoverPercentage / 100) * video.duration;
+            tooltip.innerText = 'Segment Info: ' + formatTime(hoverTime);
+        }
+    }
+
+    function seekToHover(event) {
+        var totalWidth = progressContainer.offsetWidth;
+        var mouseX = event.clientX - progressContainer.getBoundingClientRect().left;
+        var seekTime = (mouseX / totalWidth) * video.duration;
+
+        video.currentTime = seekTime;
+        video.play();
+    }
+
+    function formatTime(time) {
+        var minutes = Math.floor(time / 60);
+        var seconds = Math.floor(time % 60);
+        return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+    }
+</script>
+
+</body>
+</html>

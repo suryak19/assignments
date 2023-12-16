@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hover Segmented Video Player</title>
+    <style>
+        #segmentedVideo {
+            width: 640px;
+            height: 360px;
+        }
+
+        #progressContainer {
+            width: 100%;
+            background-color: #eee;
+            cursor: pointer;
+        }
+
+        #progressBar {
+            height: 10px;
+            background-color: #4CAF50;
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <h2>Hover Segmented Video Player</h2>
+    <video id="segmentedVideo" controls>
+        <!-- Add your video source here -->
+        <source src="/Users/suryakonduru/Downloads/sea_video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div id="progressContainer" onmousemove="updateHover(event)" onclick="seekToHover(event)">
+        <div id="progressBar"></div>
+    </div>
+</div>
+
+<script>
+    var video = document.getElementById('segmentedVideo');
+    var progressContainer = document.getElementById('progressContainer');
+    var progressBar = document.getElementById('progressBar');
+
+    function updateHover(event) {
+        var totalWidth = progressContainer.offsetWidth;
+        var mouseX = event.clientX - progressContainer.getBoundingClientRect().left;
+        var hoverPercentage = (mouseX / totalWidth) * 100;
+
+        progressBar.style.width = hoverPercentage + '%';
+    }
+
+    function seekToHover(event) {
+        var totalWidth = progressContainer.offsetWidth;
+        var mouseX = event.clientX - progressContainer.getBoundingClientRect().left;
+        var seekTime = (mouseX / totalWidth) * video.duration;
+
+        video.currentTime = seekTime;
+        video.play();
+    }
+</script>
+
+</body>
+</html>

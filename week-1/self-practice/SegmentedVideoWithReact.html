@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Segmented Video Player</title>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<script type="text/babel">
+    const { useState, useRef } = React;
+
+    const SegmentedVideoPlayer = () => {
+        const videoRef = useRef(null);
+        const progressBarRef = useRef(null);
+        const [tooltipText, setTooltipText] = useState('Segment Info');
+
+        const segments = [
+            { start: 0, end: 30, info: 'Segment 1' },
+            { start: 30, end: 60, info: 'Segment 2' }
+            // Add more segments as needed
+        ];
+
+        const handleMouseMove = (event) => {
+            const totalWidth = progressBarRef.current.offsetWidth;
+            const mouseX = event.clientX - progressBarRef.current.getBoundingClientRect().left;
+            const hoverPercentage = (mouseX / totalWidth) * 100;
+
+            const hoverTime = (hoverPercentage / 100) * videoRef.current.duration;
+            setTooltipText(getSegmentInfo(hoverTime));
+        };
+
+        const handleSeek = (event) => {
+            const totalWidth = progressBarRef.current.offsetWidth;
+            const mouseX = event.clientX - progressBarRef.current.getBoundingClientRect().left;
+            const seekTime = (mouseX / totalWidth) * videoRef.current.duration;
+
+            videoRef.current.currentTime = seekTime;
+            videoRef.current.play();
+        };
+
+        const getSegmentInfo = (time) => {
+            for (let i = 0; i < segments.length; i++) {
+                if (time >= segments[i].start && time <= segments[i].end) {
+                    return 'Segment Info: ' + segments[i].info;
+                }
+            }
+            return 'Segment Info';
+        };
+
+        return (
+            <div>
+                <h2>Segmented Video Player</h2>
+                <video
+                    ref={videoRef}
+                    width="640"
+                    height="360"
+                    controls
+                    onMouseMove={handleMouseMove}
+                    onClick={handleSeek}
+                >
+                    <source src="/Users/suryakonduru/Downloads/sea_video.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+                <div
+                    ref={progressBarRef}
+                    style={{
+                        width: '100%',
+                        backgroundColor: '#eee',
+                        cursor: 'pointer',
+                        position: 'relative'
+                    }}
+                >
+                    <div
+                        style={{
+                            height: '10px',
+                            backgroundColor: '#4CAF50',
+                            width: '0'
+                        }}
+                    ></div>
+                    <div
+                        className="tooltip"
+                        style={{
+                            visibility: 'hidden',
+                            width: '120px',
+                            backgroundColor: '#333',
+                            color: '#fff',
+                            textAlign: 'center',
+                            borderRadius: '5px',
+                            padding: '5px',
+                            position: 'absolute',
+                            zIndex: '1',
+                            bottom: '125%',
+                            left: '50%',
+                            marginLeft: '-60px',
+                            opacity: '0',
+                            transition: 'opacity 0.3s'
+                        }}
+                    >
+                        {tooltipText}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    ReactDOM.render(
+        <SegmentedVideoPlayer />,
+        document.getElementById('root')
+    );
+</script>
+
+</body>
+</html>

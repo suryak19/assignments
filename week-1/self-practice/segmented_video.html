@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segmented Video Player</title>
+</head>
+<body>
+
+<div>
+    <h2>Segmented Video Player</h2>
+    <video id="segmentedVideo" width="640" height="360" controls>
+        <!-- Add your video source here -->
+        <source src="/Users/suryakonduru/Downloads/sea_video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div>
+        <button onclick="playSegment(0, 30)">Play Segment 1</button>
+        <button onclick="playSegment(30, 60)">Play Segment 2</button>
+        <!-- Add more buttons for other segments as needed -->
+    </div>
+</div>
+
+<script>
+    var video = document.getElementById('segmentedVideo');
+
+    function playSegment(start, end) {
+        video.currentTime = start;
+        video.play();
+        // Set a timeout to stop the video at the specified end time
+        setTimeout(function() {
+            video.pause();
+        }, (end - start) * 1000);
+    }
+</script>
+
+</body>
+</html>
